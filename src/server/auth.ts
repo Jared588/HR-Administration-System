@@ -5,7 +5,8 @@ import {
   type NextAuthOptions,
 } from "next-auth";
 import { type Adapter } from "next-auth/adapters";
-import DiscordProvider from "next-auth/providers/discord";
+import CredentialsProvider from "next-auth/providers/credentials";
+import bcrypt from "bcrypt"; 
 
 import { env } from "~/env";
 import { db } from "~/server/db";
@@ -38,20 +39,24 @@ declare module "next-auth" {
  */
 export const authOptions: NextAuthOptions = {
   callbacks: {
-    session: ({ session, user }) => ({
-      ...session,
-      user: {
-        ...session.user,
-        id: user.id,
-      },
-    }),
+    async session({ session, token, user }) {
+      if (token) {
+        session.user = {
+          ...session.user,
+          id: token.id as string,
+        };
+      }
+      return session;
+    },
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user.id;
+      }
+      return token;
+    },
   },
   adapter: PrismaAdapter(db) as Adapter,
   providers: [
-    DiscordProvider({
-      clientId: env.DISCORD_CLIENT_ID,
-      clientSecret: env.DISCORD_CLIENT_SECRET,
-    }),
     /**
      * ...add more providers here.
      *
@@ -61,7 +66,39 @@ export const authOptions: NextAuthOptions = {
      *
      * @see https://next-auth.js.org/providers/github
      */
+    CredentialsProvider({
+      name: "Credentials",
+      credentials: {
+        email: { label: "Email", type: "text" },
+        password: { label: "Password", type: "password" },
+      },
+      async authorize(credentials) {
+        if (!credentials?.email || !credentials?.password) {
+          throw new Error("Please enter both an email and password");
+        }
+
+        // Fetch user from your database
+        const user = await db.user.findUnique({ where: { email: credentials.email } });
+        console.log(user)
+
+        if (user && credentials.password === user.password) {
+          // Return user object if credentials are valid
+          console.log('passwords match!')
+          return { id: user.id, name: user.name, email: user.email };
+        }
+
+        // If authentication fails, return null
+        return null;
+      },
+    }),
   ],
+  pages: {
+    signIn: "/auth/signin"
+  },
+  session: {
+    strategy: "jwt",
+    maxAge: 24 * 60 * 60, // 1 day
+  },
 };
 
 /**
