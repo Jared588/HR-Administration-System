@@ -29,29 +29,40 @@ export default function SignInPage() {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-zinc-200 justify-center items-center gap-10 pb-60">
-      <h1 className="text-5xl text-black">Sign In</h1>
-      <form onSubmit={handleSubmit} className="flex flex-col w-72 gap-2">
-        <input
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder="Email"
-          autoComplete="email"
-          required
-          className="border border-zinc-800 rounded-2xl p-1 px-3"
-        />
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          placeholder="Password"
-          required
-          className="border border-zinc-800 rounded-2xl p-1 px-3"
-        />
-        <button type="submit" className="bg-blue-500 rounded-full border border-zinc-800">Go!</button>
-      </form>
-      {error && <p className="text-red-500">{error}</p>}
+    <div className="flex min-h-screen w-full flex-col items-center justify-center gap-10 border border-black mx-auto">
+      <div className="rounded-xl bg-gradient-to-b from-[#e7e7e7] to-[#ededee] p-8 md:p-10 mb-28">
+        <h1 className="text-5xl text-black mb-8">Login</h1>
+        <form onSubmit={handleSubmit} className="flex flex-col w-72">
+          <label htmlFor="email" className="text-black">Email</label>
+          <input
+            id="email"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="Email"
+            autoComplete="email"
+            required
+            className="rounded-md border border-zinc-800 p-2 mb-6"
+          />
+          <label htmlFor="password" className="text-black">Password</label>
+          <input
+            id="password"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="Password"
+            required
+            className="rounded-md border border-zinc-800 p-2 mb-4"
+          />
+          <button
+            type="submit"
+            className="mt-4 rounded-full bg-blue-500 text-white px-4 py-2 transition hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300"
+          >
+            Login
+          </button>
+        </form>
+        {error && <p className="text-red-500 mt-4">{error}</p>}
+      </div>
     </div>
   );
 }
