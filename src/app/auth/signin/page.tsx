@@ -29,15 +29,17 @@ export default function SignInPage() {
   };
 
   return (
-    <div>
-      <h1>Sign In</h1>
-      <form onSubmit={handleSubmit}>
+    <div className="flex flex-col h-screen bg-zinc-200 justify-center items-center gap-10 pb-60">
+      <h1 className="text-5xl text-black">Sign In</h1>
+      <form onSubmit={handleSubmit} className="flex flex-col w-72 gap-2">
         <input
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="Email"
+          autoComplete="email"
           required
+          className="border border-zinc-800 rounded-2xl p-1 px-3"
         />
         <input
           type="password"
@@ -45,11 +47,11 @@ export default function SignInPage() {
           onChange={(e) => setPassword(e.target.value)}
           placeholder="Password"
           required
+          className="border border-zinc-800 rounded-2xl p-1 px-3"
         />
-        <button type="submit">Sign In</button>
+        <button type="submit" className="bg-blue-500 rounded-full border border-zinc-800">Go!</button>
       </form>
-      {error && <p style={{ color: "red" }}>{error}</p>}
+      {error && <p className="text-red-500">{error}</p>}
     </div>
   );
 }
-
