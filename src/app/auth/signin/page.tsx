@@ -30,9 +30,9 @@ export default function SignInPage() {
 
   return (
     <div className="flex min-h-screen w-full flex-col items-center justify-center gap-10 border border-black mx-auto">
-      <div className="rounded-xl bg-gradient-to-b from-[#e7e7e7] to-[#ededee] p-8 md:p-10 mb-28">
+      <div className="rounded-xl p-8 md:p-10 mb-28">
         <h1 className="text-5xl text-black mb-8">Login</h1>
-        <form onSubmit={handleSubmit} className="flex flex-col w-72">
+        <form onSubmit={handleSubmit} className="flex flex-col w-80">
           <label htmlFor="email" className="text-black">Email</label>
           <input
             id="email"
