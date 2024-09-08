@@ -53,6 +53,16 @@ model User {
     sessions      Session[]
 }
 
+model Employee {
+  id        String   @id @default(uuid())
+  firstName String
+  lastName  String
+  tel       String
+  email     String   @unique
+  manager   String
+  status    String
+}
+
 model VerificationToken {
     identifier String
     token      String   @unique

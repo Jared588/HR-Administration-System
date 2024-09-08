@@ -1,4 +1,5 @@
 import { FilterForm } from "../_components/filter-form";
+import EmployeeTable from "../_components/employee-table/page";
 
 export default function EmployeeList() {
   return (
@@ -13,8 +14,7 @@ export default function EmployeeList() {
           <p>Show per page</p>
           <input type="text" className="border border-black" />
         </div>
-        <input type="search" name="employee-search" id="employee-search" />
-        <table></table>
+        <EmployeeTable />
       </div>
     </div>
   );

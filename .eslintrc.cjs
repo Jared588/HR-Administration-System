@@ -2,7 +2,7 @@
 const config = {
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
-    "project": true
+    "project": "./tsconfig.json"
   },
   "plugins": [
     "@typescript-eslint"
@@ -15,6 +15,8 @@ const config = {
   "rules": {
     "@typescript-eslint/array-type": "off",
     "@typescript-eslint/consistent-type-definitions": "off",
+    '@typescript-eslint/no-unsafe-assignment': 'error',
+    '@typescript-eslint/no-unsafe-call': 'error',
     "@typescript-eslint/consistent-type-imports": [
       "warn",
       {
