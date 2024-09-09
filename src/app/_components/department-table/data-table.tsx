@@ -23,12 +23,12 @@ import {
 
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
-import { type Employee } from "@prisma/client";
+import { type Department } from "@prisma/client";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
-  onEditRow: (row: Employee) => void; // Add a new prop for editing a row
+  onEditRow: (row: Department) => void; // Add a new prop for editing a row
 }
 
 export function DataTable<TData, TValue>({
@@ -46,9 +46,9 @@ export function DataTable<TData, TValue>({
       {
         id: 'edit',
         header: 'Actions',
-        cell: ({ row }: { row: { original: Employee } }) => (
+        cell: ({ row }: { row: { original: Department } }) => (
           <button
-            onClick={() => onEditRow(row.original)} // Call onEditRow with the original row data
+            onClick={() => onEditRow(row.original)} // Call onEditRow with the original row data   
             className={`${row.original.status === "Active" ? "text-red-500 hover:text-red-600" : "text-green-500 hover:text-green-600"}`}
           >
             {row.original.status === "Active" ? "Deactivate" : "Activate"}

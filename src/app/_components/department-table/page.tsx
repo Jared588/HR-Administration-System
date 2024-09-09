@@ -1,21 +1,21 @@
-import { PrismaClient, type Employee } from "@prisma/client";
+import { PrismaClient, type Department } from "@prisma/client";
 import { ClientDataTable } from "./client";
 
 const prisma = new PrismaClient();
 
-async function getData(): Promise<Employee[]> {
+async function getData(): Promise<Department[]> {
   try {
-    const employees = await prisma.employee.findMany({
-      orderBy: { firstName: "asc"}
+    const departments = await prisma.department.findMany({
+      orderBy: { name: "asc"}
     });
-    return employees;
+    return departments;
   } catch (error) {
     console.error(error);
     return []; // Return an empty array in case of an error
   }
 }
 
-export default async function EmployeeTable() {
+export default async function DepartmentTable() {
   const data = await getData();
 
   return (

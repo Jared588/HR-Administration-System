@@ -54,13 +54,20 @@ model User {
 }
 
 model Employee {
-  id        String   @id @default(uuid())
-  firstName String
-  lastName  String
-  tel       String
-  email     String   @unique
-  manager   String
-  status    String
+    id        String @id @default(uuid())
+    firstName String
+    lastName  String
+    tel       String
+    email     String @unique
+    manager   String
+    status    String
+}
+
+model Department {
+    id        String  @id @default(uuid())
+    name      String
+    manager   String
+    status    String
 }
 
 model VerificationToken {
