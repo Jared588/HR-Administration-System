@@ -18,7 +18,7 @@ export function ClientDataTable({ data }: ClientDataTableProps) {
   const updateEmployeeMutation = api.employee.updateStatus.useMutation({
     onSuccess: () => {
       // Optionally, refetch or invalidate queries if needed
-      utils.employee.getAll.invalidate(); // Make sure to define this procedure
+      void utils.employee.getAll.invalidate(); // Make sure to define this procedure
     },
   });
 
