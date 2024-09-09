@@ -47,16 +47,14 @@ export function DataTable<TData, TValue>({
         id: 'edit',
         header: 'Actions',
         cell: ({ row }: { row: { original: Employee } }) => (
-          <Button
-            variant="outline"
-            size="sm"
+          <button
             onClick={() => onEditRow(row.original)} // Call onEditRow with the original row data
             // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
             className={`${row.original.status === "Active" ? "text-red-500 hover:text-red-600" : "text-green-500 hover:text-green-600"}`}
           >
             {/* eslint-disable-next-line @typescript-eslint/no-unsafe-member-access */}
             {row.original.status === "Active" ? "Deactivate" : "Activate"}
-          </Button>
+          </button>
         ),
       },
     ] as ColumnDef<TData, unknown>[];

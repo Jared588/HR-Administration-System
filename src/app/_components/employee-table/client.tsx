@@ -5,6 +5,7 @@ import { useState } from "react";
 import { type Employee } from "@prisma/client";
 import { columns } from "./columns";
 import { DataTable } from "./data-table";
+import { api } from "~/trpc/react";
 
 interface ClientDataTableProps {
   data: Employee[];
@@ -12,24 +13,31 @@ interface ClientDataTableProps {
 
 export function ClientDataTable({ data }: ClientDataTableProps) {
   const [employees, setEmployees] = useState<Employee[]>(data);
+  const utils = api.useUtils();
+  
+  const updateEmployeeMutation = api.employee.updateStatus.useMutation({
+    onSuccess: () => {
+      // Optionally, refetch or invalidate queries if needed
+      utils.employee.getAll.invalidate(); // Make sure to define this procedure
+    },
+  });
 
-  const handleEditRow = (row: Employee) => {
-    const updatedData = employees.map((employee) => {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      if (employee.id === row.id) {
-        // Toggle the status between "Active" and "Inactive"
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-        return {
-          ...employee,
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-          status: employee.status === "Active" ? "Inactive" : "Active",
-        };
-      }
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-      return employee;
-    });
+  const handleEditRow = async (row: Employee) => {
+    const newStatus = row.status === "Active" ? "Inactive" : "Active";
 
-    setEmployees(updatedData); // Update the state with modified data
+    // Optimistically update the UI
+    const updatedData = employees.map((employee) =>
+      employee.id === row.id ? { ...employee, status: newStatus } : employee
+    );
+    setEmployees(updatedData);
+
+    // Call the tRPC mutation
+    try {
+      await updateEmployeeMutation.mutateAsync({ id: row.id, status: newStatus });
+    } catch (error) {
+      // Optionally handle errors
+      console.error("Failed to update employee status:", error);
+    }
   };
 
   return (
