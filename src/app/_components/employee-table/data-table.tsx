@@ -23,32 +23,58 @@ import {
 
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
+import { type Employee } from "@prisma/client";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  onEditRow: (row: Employee) => void; // Add a new prop for editing a row
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
+  onEditRow,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [globalFilter, setGlobalFilter] = React.useState<string>(""); // State to store global filter
+  const [globalFilter, setGlobalFilter] = React.useState<string>("");
+
+  // Append the edit button column definition to the columns
+  const columnsWithEditButton = React.useMemo(() => {
+    return [
+      ...columns,
+      {
+        id: 'edit',
+        header: 'Actions',
+        cell: ({ row }: { row: { original: Employee } }) => (
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => onEditRow(row.original)} // Call onEditRow with the original row data
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+            className={`${row.original.status === "Active" ? "text-red-500 hover:text-red-600" : "text-green-500 hover:text-green-600"}`}
+          >
+            {/* eslint-disable-next-line @typescript-eslint/no-unsafe-member-access */}
+            {row.original.status === "Active" ? "Deactivate" : "Activate"}
+          </Button>
+        ),
+      },
+    ] as ColumnDef<TData, unknown>[];
+  }, [columns, onEditRow]);
 
   const table = useReactTable({
     data,
-    columns,
+    columns: columnsWithEditButton,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
-    onGlobalFilterChange: setGlobalFilter, // Set global filter
     getFilteredRowModel: getFilteredRowModel(),
     state: {
       sorting,
-      globalFilter, // Add global filter to the state
+      globalFilter,
     },
+    onGlobalFilterChange: setGlobalFilter,
   });
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -60,7 +86,7 @@ export function DataTable<TData, TValue>({
       <div className="flex justify-end py-4">
         <Input
           placeholder="Search..."
-          value={globalFilter ?? ""}
+          value={globalFilter}
           onChange={handleSearchChange}
           className="w-30"
         />
@@ -70,18 +96,16 @@ export function DataTable<TData, TValue>({
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead key={header.id}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext(),
-                          )}
-                    </TableHead>
-                  );
-                })}
+                {headerGroup.headers.map((header) => (
+                  <TableHead key={header.id}>
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext(),
+                        )}
+                  </TableHead>
+                ))}
               </TableRow>
             ))}
           </TableHeader>
@@ -94,20 +118,14 @@ export function DataTable<TData, TValue>({
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext(),
-                      )}
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </TableCell>
                   ))}
                 </TableRow>
               ))
             ) : (
               <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center"
-                >
+                <TableCell colSpan={columns.length} className="h-24 text-center">
                   No results.
                 </TableCell>
               </TableRow>

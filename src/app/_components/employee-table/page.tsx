@@ -1,6 +1,5 @@
-import { PrismaClient, type Employee } from "@prisma/client"; 
-import { columns } from "./columns";
-import { DataTable } from "./data-table";
+import { PrismaClient, type Employee } from "@prisma/client";
+import { ClientDataTable } from "./client";
 
 const prisma = new PrismaClient();
 
@@ -20,7 +19,7 @@ export default async function EmployeeTable() {
 
   return (
     <div className="container mx-auto">
-      <DataTable columns={columns} data={data} />
+      <ClientDataTable data={data} />
     </div>
   );
 }
