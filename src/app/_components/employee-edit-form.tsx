@@ -78,7 +78,7 @@ export function EditForm() {
             <FormItem className="flex items-center justify-between">
               <FormLabel>Name</FormLabel>
               <FormControl>
-                <Input placeholder="name" {...field} className="w-2/3" />
+                <Input placeholder="name" {...field} className="w-2/3" required/>
               </FormControl>
             </FormItem>
           )}
@@ -90,7 +90,7 @@ export function EditForm() {
             <FormItem className="flex items-center justify-between">
               <FormLabel>Surname</FormLabel>
               <FormControl>
-                <Input placeholder="surname" {...field} className="w-2/3" />
+                <Input placeholder="surname" {...field} className="w-2/3" required/>
               </FormControl>
             </FormItem>
           )}
@@ -106,6 +106,7 @@ export function EditForm() {
                   placeholder="telephone number"
                   {...field}
                   className="w-2/3"
+                  required
                 />
               </FormControl>
             </FormItem>
@@ -118,7 +119,7 @@ export function EditForm() {
             <FormItem className="flex items-center justify-between">
               <FormLabel>Email Address</FormLabel>
               <FormControl>
-                <Input placeholder="email" {...field} className="w-2/3" />
+                <Input placeholder="email" {...field} className="w-2/3" required/>
               </FormControl>
             </FormItem>
           )}
@@ -129,7 +130,7 @@ export function EditForm() {
           render={({ field }) => (
             <FormItem className="flex items-center justify-between">
               <FormLabel>Manager</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <Select onValueChange={field.onChange} defaultValue={field.value} required>
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue placeholder="Select" />
@@ -150,7 +151,7 @@ export function EditForm() {
           render={({ field }) => (
             <FormItem className="flex items-center justify-between">
               <FormLabel>Status</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <Select onValueChange={field.onChange} defaultValue={field.value} required>
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue placeholder="Select" />
