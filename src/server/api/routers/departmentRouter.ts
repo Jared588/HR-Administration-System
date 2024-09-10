@@ -27,4 +27,19 @@ export const departmentRouter = createTRPCRouter({
 
         return departments;
     }),
+
+    createDepartment: publicProcedure
+        .input(z.object({
+            name: z.string(),
+            manager: z.string(),
+            status: z.enum(['Active', 'Inactive']),
+        }))
+        .mutation(async ({ ctx, input }) => {
+            const { name, manager, status } = input;
+            await ctx.db.department.create({
+                data: { name, manager, status },
+            })
+
+            return { success: true }
+        }),
 });

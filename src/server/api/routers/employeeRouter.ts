@@ -30,7 +30,6 @@ export const employeeRouter = createTRPCRouter({
 
     createEmployee: publicProcedure
         .input(z.object({
-            
             firstName: z.string(),
             lastName: z.string(),
             tel: z.string(),
@@ -40,7 +39,6 @@ export const employeeRouter = createTRPCRouter({
         }))
         .mutation(async ({ ctx, input }) => {
             const { firstName, lastName, tel, email, manager, status } = input;
-
             await ctx.db.employee.create({
                 data: { firstName, lastName, tel, email, manager, status },
             })

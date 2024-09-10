@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
+import { api } from "~/trpc/react";
 
 import {
   Select,
@@ -24,9 +25,9 @@ import {
 } from "~/components/ui/form";
 
 const FormSchema = z.object({
-  name: z.string().optional(),
-  manager: z.string().optional(),
-  status: z.string().optional(),
+  name: z.string(),
+  manager: z.string(),
+  status: z.enum(["Active", "Inactive"]),
 });
 
 export function EditForm() {
@@ -35,13 +36,25 @@ export function EditForm() {
     defaultValues: {
       name: "",
       manager: "",
-      status: "",
+      status: undefined,
     },
   });
 
-  function onSubmit(data: z.infer<typeof FormSchema>) {
-    console.log(data);
-    alert("Submitted!");
+  const createDepartment = api.department.createDepartment.useMutation(); // Define function
+
+  async function onSubmit(data: z.infer<typeof FormSchema>) {
+    console.log("Submitted")
+    try {
+      await createDepartment.mutateAsync({ // Calls function
+        name: data.name,
+        manager: data.manager,
+        status: data.status,
+      });
+
+      alert("Submitted!");
+    } catch (error) {
+      console.error("Failed to create employee:", error);
+    }
   }
 
   return (
@@ -57,7 +70,7 @@ export function EditForm() {
             <FormItem className="flex items-center justify-between">
               <FormLabel>Name</FormLabel>
               <FormControl>
-                <Input placeholder="name" {...field} className="w-1/2"/>
+                <Input placeholder="name" {...field} className="w-1/2" required/>
               </FormControl>
             </FormItem>
           )}
@@ -68,7 +81,7 @@ export function EditForm() {
           render={({ field }) => (
             <FormItem className="flex items-center justify-between">
               <FormLabel>Manager</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <Select onValueChange={field.onChange} defaultValue={field.value} required>
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue placeholder="Select" />
@@ -89,15 +102,15 @@ export function EditForm() {
           render={({ field }) => (
             <FormItem className="flex items-center justify-between">
               <FormLabel>Status</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <Select onValueChange={field.onChange} defaultValue={field.value} required>
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue placeholder="Select" />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  <SelectItem value="active">Active</SelectItem>
-                  <SelectItem value="inactive">Inactive</SelectItem>
+                  <SelectItem value="Active">Active</SelectItem>
+                  <SelectItem value="Inactive">Inactive</SelectItem>
                 </SelectContent>
               </Select>
             </FormItem>
