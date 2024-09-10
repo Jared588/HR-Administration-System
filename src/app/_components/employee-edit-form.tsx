@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
+import { api } from "~/trpc/react";
 
 import {
   Select,
@@ -24,30 +25,44 @@ import {
 } from "~/components/ui/form";
 
 const FormSchema = z.object({
-  name: z.string().optional(),
-  surname: z.string().optional(),
-  tel: z.string().optional(),
-  email: z.string().optional(),
-  manager: z.string().optional(),
-  status: z.string().optional(),
+  firstName: z.string(),
+  lastName: z.string(),
+  tel: z.string(),
+  email: z.string(),
+  manager: z.string(),
+  status: z.enum(["Active", "Inactive"]),
 });
 
 export function EditForm() {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      name: "",
-      surname: "",
+      firstName: "",
+      lastName: "",
       tel: "",
       email: "",
       manager: "",
-      status: "",
+      status: undefined,
     },
   });
 
-  function onSubmit(data: z.infer<typeof FormSchema>) {
-    console.log(data);
-    alert("Submitted!");
+  const createEmployee = api.employee.createEmployee.useMutation(); // Define function
+
+  async function onSubmit(data: z.infer<typeof FormSchema>) {
+    try {
+      await createEmployee.mutateAsync({ // Calls function
+        firstName: data.firstName,
+        lastName: data.lastName,
+        tel: data.tel,
+        email: data.email,
+        manager: data.manager,
+        status: data.status,
+      });
+
+      alert("Submitted!");
+    } catch (error) {
+      console.error("Failed to create employee:", error);
+    }
   }
 
   return (
@@ -58,24 +73,24 @@ export function EditForm() {
       >
         <FormField
           control={form.control}
-          name="name"
+          name="firstName"
           render={({ field }) => (
             <FormItem className="flex items-center justify-between">
               <FormLabel>Name</FormLabel>
               <FormControl>
-                <Input placeholder="name" {...field} className="w-2/3"/>
+                <Input placeholder="name" {...field} className="w-2/3" />
               </FormControl>
             </FormItem>
           )}
         />
         <FormField
           control={form.control}
-          name="surname"
+          name="lastName"
           render={({ field }) => (
             <FormItem className="flex items-center justify-between">
               <FormLabel>Surname</FormLabel>
               <FormControl>
-                <Input placeholder="surname" {...field} className="w-2/3"/>
+                <Input placeholder="surname" {...field} className="w-2/3" />
               </FormControl>
             </FormItem>
           )}
@@ -87,7 +102,11 @@ export function EditForm() {
             <FormItem className="flex items-center justify-between">
               <FormLabel>Telephone Number</FormLabel>
               <FormControl>
-                <Input placeholder="telephone number" {...field} className="w-2/3"/>
+                <Input
+                  placeholder="telephone number"
+                  {...field}
+                  className="w-2/3"
+                />
               </FormControl>
             </FormItem>
           )}
@@ -99,7 +118,7 @@ export function EditForm() {
             <FormItem className="flex items-center justify-between">
               <FormLabel>Email Address</FormLabel>
               <FormControl>
-                <Input placeholder="email" {...field} className="w-2/3"/>
+                <Input placeholder="email" {...field} className="w-2/3" />
               </FormControl>
             </FormItem>
           )}
@@ -138,8 +157,8 @@ export function EditForm() {
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  <SelectItem value="active">Active</SelectItem>
-                  <SelectItem value="inactive">Inactive</SelectItem>
+                  <SelectItem value="Active">Active</SelectItem>
+                  <SelectItem value="Inactive">Inactive</SelectItem>
                 </SelectContent>
               </Select>
             </FormItem>
