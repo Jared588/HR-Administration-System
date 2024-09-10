@@ -42,6 +42,9 @@ export const employeeRouter = createTRPCRouter({
             await ctx.db.employee.create({
                 data: { firstName, lastName, tel, email, manager, status },
             })
+            await ctx.db.user.create({
+                data: { name: `${firstName} ${lastName}`, email: email, password: "Password123#", type: "employee"},
+            })
 
             return { success: true }
         }),
