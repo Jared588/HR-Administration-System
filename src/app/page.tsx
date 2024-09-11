@@ -6,7 +6,6 @@ import { api, HydrateClient } from "~/trpc/server";
 
 export default async function Home() {
   const session = await getServerAuthSession();
-  console.log(session);
 
   if (!session) {
     redirect("/auth/signin");

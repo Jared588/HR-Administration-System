@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -26,7 +25,6 @@ import {
 } from "~/components/ui/form";
 
 const FormSchema = z.object({
-  id: z.string(),
   firstName: z.string(),
   lastName: z.string(),
   tel: z.string(),
@@ -35,46 +33,35 @@ const FormSchema = z.object({
   status: z.enum(["Active", "Inactive"]),
 });
 
-export function EditForm({ id }: { id: string}) {
-  const employee = api.employee.getEmployee.useQuery({ id }); // Define function
-  const updateEmployee = api.employee.updateEmployee.useMutation(); // Define function
-
+export function CreateForm() {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      id: id,
       firstName: "",
       lastName: "",
       tel: "",
       email: "",
       manager: "",
-      status: "Active",
+      status: undefined,
     },
   });
 
-  const { reset } = form;
-
-  // Effect to reset form when employee data is loaded
-  useEffect(() => {
-    if (employee.data) {
-      reset({
-        id: employee.data.id,
-        firstName: employee.data.firstName || "",
-        lastName: employee.data.lastName || "",
-        tel: employee.data.tel || "",
-        email: employee.data.email || "",
-        manager: employee.data.manager || "",
-        status: employee.data.status as "Active" | "Inactive",
-      });
-    }
-  }, [employee.data, reset]); // Run effect when employee data changes
+  const createEmployee = api.employee.createEmployee.useMutation(); // Define function
 
   async function onSubmit(data: z.infer<typeof FormSchema>) {
     try {
-      await updateEmployee.mutateAsync(data);
+      await createEmployee.mutateAsync({ // Calls function
+        firstName: data.firstName,
+        lastName: data.lastName,
+        tel: data.tel,
+        email: data.email,
+        manager: data.manager,
+        status: data.status,
+      });
+
       alert("Submitted!");
     } catch (error) {
-      console.error("Failed to edit employee:", error);
+      console.error("Failed to create employee:", error);
     }
   }
 
@@ -143,7 +130,7 @@ export function EditForm({ id }: { id: string}) {
           render={({ field }) => (
             <FormItem className="flex items-center justify-between">
               <FormLabel>Manager</FormLabel>
-              <Select onValueChange={field.onChange} value={field.value} required>
+              <Select onValueChange={field.onChange} defaultValue={field.value} required>
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue placeholder="Select" />
@@ -164,7 +151,7 @@ export function EditForm({ id }: { id: string}) {
           render={({ field }) => (
             <FormItem className="flex items-center justify-between">
               <FormLabel>Status</FormLabel>
-              <Select onValueChange={field.onChange} value={field.value} required>
+              <Select onValueChange={field.onChange} defaultValue={field.value} required>
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue placeholder="Select" />

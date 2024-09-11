@@ -12,7 +12,6 @@ import Link from "next/link";
 
 export default async function DropDownMenu() {
   const session = await getServerAuthSession();
-  console.log(session?.user);
 
   return (
     <DropdownMenu>
