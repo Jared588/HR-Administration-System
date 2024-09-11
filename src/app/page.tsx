@@ -12,16 +12,16 @@ export default async function Home() {
     redirect("/auth/signin");
   }
 
+  if(session.user.type === "Admin" || session.user.type === "Manager") {
+    redirect("/employees")
+  } else if (session.user.type === "Employee") {
+    redirect("/employee-edit")
+  }
+
   return (
     <HydrateClient>
       <main className="flex min-h-screen flex-col items-center justify-center gap-4 bg-gradient-to-b from-[#292935] to-[#15162c] text-white">
         <h1>This is the homepage</h1>
-        <Link
-          href={"/api/auth/signout"}
-          className="rounded-full bg-white/10 px-10 py-3 font-semibold no-underline transition hover:bg-white/20"
-        >
-          Sign out
-        </Link>
       </main>
     </HydrateClient>
   );
