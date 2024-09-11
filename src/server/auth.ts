@@ -21,6 +21,7 @@ declare module "next-auth" {
   interface Session extends DefaultSession {
     user: {
       id: string;
+      type: string;
       // ...other properties
       // role: UserRole;
     } & DefaultSession["user"];
@@ -44,6 +45,7 @@ export const authOptions: NextAuthOptions = {
         session.user = {
           ...session.user,
           id: token.id as string,
+          type: token.type as string,
         };
       }
       return session;
@@ -51,6 +53,7 @@ export const authOptions: NextAuthOptions = {
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
+        token.type = user.type;
       }
       return token;
     },
@@ -84,7 +87,7 @@ export const authOptions: NextAuthOptions = {
         if (user && credentials.password === user.password) {
           // Return user object if credentials are valid
           console.log('passwords match!')
-          return { id: user.id, name: user.name, email: user.email };
+          return { id: user.id, name: user.name, email: user.email, type: user.type };
         }
 
         // If authentication fails, return null
