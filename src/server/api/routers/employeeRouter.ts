@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { v4 as uuidv4 } from 'uuid';
 
 import {
     createTRPCRouter,
@@ -39,11 +40,15 @@ export const employeeRouter = createTRPCRouter({
         }))
         .mutation(async ({ ctx, input }) => {
             const { firstName, lastName, tel, email, manager, status } = input;
+
+            // Generate a common unique ID for both employee and user
+            const commonId = uuidv4();
+
             await ctx.db.employee.create({
-                data: { firstName, lastName, tel, email, manager, status },
+                data: { id: commonId, firstName, lastName, tel, email, manager, status },
             })
             await ctx.db.user.create({
-                data: { name: `${firstName} ${lastName}`, email: email, password: "Password123#", type: "employee" },
+                data: { id: commonId, name: `${firstName} ${lastName}`, email: email, password: "Password123#", type: "employee" },
             })
 
             return { success: true }
