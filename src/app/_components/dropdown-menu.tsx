@@ -8,6 +8,7 @@ import {
 } from "~/components/ui/dropdown-menu";
 
 import { getServerAuthSession } from "~/server/auth";
+import Link from "next/link";
 
 export default async function DropDownMenu() {
   const session = await getServerAuthSession();
@@ -26,12 +27,51 @@ export default async function DropDownMenu() {
         </svg>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
-        <DropdownMenuLabel>{}</DropdownMenuLabel>
+        <DropdownMenuLabel>{session?.user.type}</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>Profile</DropdownMenuItem>
-        <DropdownMenuItem>Billing</DropdownMenuItem>
-        <DropdownMenuItem>Team</DropdownMenuItem>
-        <DropdownMenuItem>Subscription</DropdownMenuItem>
+        {session?.user.type === "Admin" && (
+          <>
+            <DropdownMenuItem>
+              <Link href={"/employees"}>View Employees</Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+              <Link href={"/employee-edit"}>Create Employee</Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+              <Link href={"/departments"}>View Departments</Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+              <Link href={"/department-edit"}>Create Department</Link>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem>
+              <Link href={"/api/auth/signout"}>Sign out</Link>
+            </DropdownMenuItem>
+          </>
+        )}
+        {session?.user.type === "Manager" && (
+          <>
+            <DropdownMenuItem>
+              <Link href={"/employees"}>View Employees</Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+              <Link
+                href={"/api/auth/signout"}
+                className="rounded-full bg-white/10 px-10 py-3 font-semibold no-underline transition hover:bg-white/20"
+              >
+                Sign out
+              </Link>
+            </DropdownMenuItem>
+          </>
+        )}
+        {session?.user.type === "Employee" && (
+          <>
+            <DropdownMenuItem>Edit Profile</DropdownMenuItem>
+            <DropdownMenuItem>
+              <Link href={"/api/auth/signout"}>Sign out</Link>
+            </DropdownMenuItem>
+          </>
+        )}
       </DropdownMenuContent>
     </DropdownMenu>
   );
