@@ -55,12 +55,7 @@ export default async function DropDownMenu() {
               <Link href={"/employees"}>View Employees</Link>
             </DropdownMenuItem>
             <DropdownMenuItem>
-              <Link
-                href={"/api/auth/signout"}
-                className="rounded-full bg-white/10 px-10 py-3 font-semibold no-underline transition hover:bg-white/20"
-              >
-                Sign out
-              </Link>
+              <Link href={"/api/auth/signout"}>Sign out</Link>
             </DropdownMenuItem>
           </>
         )}
