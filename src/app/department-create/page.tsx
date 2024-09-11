@@ -1,5 +1,5 @@
 import Header from "../_components/header";
-import { EditForm } from "../_components/department-edit-form";
+import { CreateForm } from "../_components/department-create-form";
 
 export default function DepartmentCreate() {
   return (
@@ -7,7 +7,7 @@ export default function DepartmentCreate() {
       <Header />
       <div className="flex flex-col w-2/3">
         <h1 className="py-4 text-2xl">Create Department</h1>
-        <EditForm />
+        <CreateForm />
       </div>
     </div>
   );

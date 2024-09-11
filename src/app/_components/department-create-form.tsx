@@ -30,7 +30,7 @@ const FormSchema = z.object({
   status: z.enum(["Active", "Inactive"]),
 });
 
-export function EditForm() {
+export function CreateForm() {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
