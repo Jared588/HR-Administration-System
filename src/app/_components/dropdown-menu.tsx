@@ -60,7 +60,9 @@ export default async function DropDownMenu() {
         )}
         {session?.user.type === "Employee" && (
           <>
-            <DropdownMenuItem>Edit Profile</DropdownMenuItem>
+            <DropdownMenuItem>
+              <Link href={"/employee-edit"}>Edit Profile</Link>
+            </DropdownMenuItem>
             <DropdownMenuItem>
               <Link href={"/api/auth/signout"}>Sign out</Link>
             </DropdownMenuItem>
