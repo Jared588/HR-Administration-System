@@ -35,13 +35,13 @@ export default async function DropDownMenu() {
               <Link href={"/employees"}>View Employees</Link>
             </DropdownMenuItem>
             <DropdownMenuItem>
-              <Link href={"/employee-edit"}>Create Employee</Link>
+              <Link href={"/employee-create"}>Create Employee</Link>
             </DropdownMenuItem>
             <DropdownMenuItem>
               <Link href={"/departments"}>View Departments</Link>
             </DropdownMenuItem>
             <DropdownMenuItem>
-              <Link href={"/department-edit"}>Create Department</Link>
+              <Link href={"/department-create"}>Create Department</Link>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem>
