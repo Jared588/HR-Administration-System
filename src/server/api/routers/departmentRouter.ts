@@ -42,4 +42,33 @@ export const departmentRouter = createTRPCRouter({
 
             return { success: true }
         }),
+
+        getDepartment: publicProcedure
+        .input(z.object({ id: z.string() }))
+        .query(async ({ ctx, input }) => {
+            const { id } = input;
+
+            const department = await ctx.db.department.findUnique({
+                where: { id },
+            })
+
+            return department;
+        }),
+
+    updateDepartment: publicProcedure
+        .input(z.object({
+            id: z.string(),
+            name: z.string(),
+            manager: z.string(),
+            status: z.enum(['Active', 'Inactive']),
+        }))
+        .mutation(async ({ ctx, input }) => {
+            const { id, name, manager, status } = input;
+            await ctx.db.department.update({
+                where: { id },
+                data: { name, manager, status },
+            })
+
+            return { success: true }
+        }),
 });

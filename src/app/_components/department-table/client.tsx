@@ -6,6 +6,7 @@ import { type Department } from "@prisma/client";
 import { columns } from "./columns";
 import { DataTable } from "./data-table";
 import { api } from "~/trpc/react";
+import { useRouter } from "next/navigation";
 
 interface ClientDataTableProps {
   data: Department[];
@@ -14,6 +15,7 @@ interface ClientDataTableProps {
 export function ClientDataTable({ data }: ClientDataTableProps) {
   const [departments, setDepartments] = useState<Department[]>(data);
   const utils = api.useUtils();
+  const router = useRouter();
   
   const updateDepartmentMutation = api.department.updateStatus.useMutation({
     onSuccess: () => {
@@ -22,7 +24,7 @@ export function ClientDataTable({ data }: ClientDataTableProps) {
     },
   });
 
-  const handleEditRow = async (row: Department) => {
+  const handleStatus = async (row: Department) => {
     const newStatus = row.status === "Active" ? "Inactive" : "Active";
 
     // Optimistically update the UI
@@ -40,12 +42,17 @@ export function ClientDataTable({ data }: ClientDataTableProps) {
     }
   };
 
+  const handleEdit = async (row: Department) => {
+    router.push(`/department-edit/${row.id}`);
+  };
+
   return (
     <div className="container mx-auto">
       <DataTable
         columns={columns}
         data={departments}
-        onEditRow={handleEditRow}
+        handleStatus={handleStatus}
+        handleEdit={handleEdit}
       />
     </div>
   );
