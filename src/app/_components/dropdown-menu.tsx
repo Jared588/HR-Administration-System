@@ -28,7 +28,7 @@ export default async function DropDownMenu() {
       <DropdownMenuContent>
         <DropdownMenuLabel>{session?.user.type}</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        {session?.user.type === "Admin" && (
+        {session?.user.type === "admin" && (
           <>
             <DropdownMenuItem>
               <Link href={"/employees"}>View Employees</Link>
@@ -48,7 +48,7 @@ export default async function DropDownMenu() {
             </DropdownMenuItem>
           </>
         )}
-        {session?.user.type === "Manager" && (
+        {session?.user.type === "manager" && (
           <>
             <DropdownMenuItem>
               <Link href={"/employees"}>View Employees</Link>
@@ -58,10 +58,10 @@ export default async function DropDownMenu() {
             </DropdownMenuItem>
           </>
         )}
-        {session?.user.type === "Employee" && (
+        {session?.user.type === "employee" && (
           <>
             <DropdownMenuItem>
-              <Link href={"/employee-edit"}>Edit Profile</Link>
+              <Link href={`/employee-edit/${session.user.id}`}>Edit Profile</Link>
             </DropdownMenuItem>
             <DropdownMenuItem>
               <Link href={"/api/auth/signout"}>Sign out</Link>

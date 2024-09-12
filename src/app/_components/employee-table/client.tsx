@@ -6,6 +6,8 @@ import { type Employee } from "@prisma/client";
 import { columns } from "./columns";
 import { DataTable } from "./data-table";
 import { api } from "~/trpc/react";
+import { Router } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 interface ClientDataTableProps {
   data: Employee[];
@@ -14,6 +16,7 @@ interface ClientDataTableProps {
 export function ClientDataTable({ data }: ClientDataTableProps) {
   const [employees, setEmployees] = useState<Employee[]>(data);
   const utils = api.useUtils();
+  const router = useRouter();
   
   const updateEmployeeMutation = api.employee.updateStatus.useMutation({
     onSuccess: () => {
@@ -22,7 +25,7 @@ export function ClientDataTable({ data }: ClientDataTableProps) {
     },
   });
 
-  const handleEditRow = async (row: Employee) => {
+  const handleStatus = async (row: Employee) => {
     const newStatus = row.status === "Active" ? "Inactive" : "Active";
 
     // Optimistically update the UI
@@ -40,12 +43,17 @@ export function ClientDataTable({ data }: ClientDataTableProps) {
     }
   };
 
+  const handleEdit = async (row: Employee) => {
+    router.push(`/employee-edit/${row.id}`);
+  };
+
   return (
     <div className="container mx-auto">
       <DataTable
         columns={columns}
         data={employees}
-        onEditRow={handleEditRow}
+        handleStatus={handleStatus}
+        handleEdit={handleEdit}
       />
     </div>
   );

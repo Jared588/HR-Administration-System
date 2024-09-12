@@ -28,13 +28,15 @@ import { type Employee } from "@prisma/client";
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
-  onEditRow: (row: Employee) => void; // Add a new prop for editing a row
+  handleStatus: (row: Employee) => void; // Add a new prop for editing a row
+  handleEdit: (row: Employee) => void;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
-  onEditRow,
+  handleStatus,
+  handleEdit,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [globalFilter, setGlobalFilter] = React.useState<string>("");
@@ -44,19 +46,27 @@ export function DataTable<TData, TValue>({
     return [
       ...columns,
       {
-        id: 'edit',
-        header: 'Actions',
+        id: "edit",
+        header: "Actions",
         cell: ({ row }: { row: { original: Employee } }) => (
-          <button
-            onClick={() => onEditRow(row.original)} // Call onEditRow with the original row data
-            className={`${row.original.status === "Active" ? "text-red-500 hover:text-red-600" : "text-green-500 hover:text-green-600"}`}
-          >
-            {row.original.status === "Active" ? "Deactivate" : "Activate"}
-          </button>
+          <div className="flex justify-between gap-6">
+            <button
+              onClick={() => handleStatus(row.original)} // Call handleStatus with the original row data
+              className={`${row.original.status === "Active" ? "text-red-500 hover:text-red-600" : "text-green-500 hover:text-green-600"}`}
+            >
+              {row.original.status === "Active" ? "Deactivate" : "Activate"}
+            </button>
+            <button
+              onClick={() => handleEdit(row.original)} // Call handleEdit with the original row data
+              className="text-blue-500 hover:text-blue-600"
+            >
+              Edit
+            </button>
+          </div>
         ),
       },
     ] as ColumnDef<TData, unknown>[];
-  }, [columns, onEditRow]);
+  }, [columns, handleStatus]);
 
   const table = useReactTable({
     data,
@@ -114,14 +124,20 @@ export function DataTable<TData, TValue>({
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext(),
+                      )}
                     </TableCell>
                   ))}
                 </TableRow>
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={columns.length} className="h-24 text-center">
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-24 text-center"
+                >
                   No results.
                 </TableCell>
               </TableRow>
