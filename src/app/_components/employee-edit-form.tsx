@@ -35,7 +35,7 @@ const FormSchema = z.object({
   status: z.enum(["Active", "Inactive"]),
 });
 
-export function EditForm({ id }: { id: string}) {
+export function EditForm({ id, type }: { id: string; type: string }) {
   const employee = api.employee.getEmployee.useQuery({ id }); // Define function
   const updateEmployee = api.employee.updateEmployee.useMutation(); // Define function
 
@@ -91,7 +91,12 @@ export function EditForm({ id }: { id: string}) {
             <FormItem className="flex items-center justify-between">
               <FormLabel>Name</FormLabel>
               <FormControl>
-                <Input placeholder="name" {...field} className="w-2/3" required/>
+                <Input
+                  placeholder="name"
+                  {...field}
+                  className="w-2/3"
+                  required
+                />
               </FormControl>
             </FormItem>
           )}
@@ -103,7 +108,12 @@ export function EditForm({ id }: { id: string}) {
             <FormItem className="flex items-center justify-between">
               <FormLabel>Surname</FormLabel>
               <FormControl>
-                <Input placeholder="surname" {...field} className="w-2/3" required/>
+                <Input
+                  placeholder="surname"
+                  {...field}
+                  className="w-2/3"
+                  required
+                />
               </FormControl>
             </FormItem>
           )}
@@ -132,52 +142,73 @@ export function EditForm({ id }: { id: string}) {
             <FormItem className="flex items-center justify-between">
               <FormLabel>Email Address</FormLabel>
               <FormControl>
-                <Input placeholder="email" {...field} className="w-2/3" required/>
+                <Input
+                  placeholder="email"
+                  {...field}
+                  className="w-2/3"
+                  required
+                />
               </FormControl>
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          name="manager"
-          render={({ field }) => (
-            <FormItem className="flex items-center justify-between">
-              <FormLabel>Manager</FormLabel>
-              <Select onValueChange={field.onChange} value={field.value} required>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectItem value="m@example.com">m@example.com</SelectItem>
-                  <SelectItem value="m@google.com">m@google.com</SelectItem>
-                  <SelectItem value="m@support.com">m@support.com</SelectItem>
-                </SelectContent>
-              </Select>
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="status"
-          render={({ field }) => (
-            <FormItem className="flex items-center justify-between">
-              <FormLabel>Status</FormLabel>
-              <Select onValueChange={field.onChange} value={field.value} required>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectItem value="Active">Active</SelectItem>
-                  <SelectItem value="Inactive">Inactive</SelectItem>
-                </SelectContent>
-              </Select>
-            </FormItem>
-          )}
-        />
+        {type === "admin" && (
+          <>
+            <FormField
+              control={form.control}
+              name="manager"
+              render={({ field }) => (
+                <FormItem className="flex items-center justify-between">
+                  <FormLabel>Manager</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    value={field.value}
+                    required
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="m@example.com">
+                        m@example.com
+                      </SelectItem>
+                      <SelectItem value="m@google.com">m@google.com</SelectItem>
+                      <SelectItem value="m@support.com">
+                        m@support.com
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="status"
+              render={({ field }) => (
+                <FormItem className="flex items-center justify-between">
+                  <FormLabel>Status</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    value={field.value}
+                    required
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="Active">Active</SelectItem>
+                      <SelectItem value="Inactive">Inactive</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </FormItem>
+              )}
+            />
+          </>
+        )}
         <Button type="submit">Save</Button>
       </form>
     </Form>

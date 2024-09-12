@@ -10,7 +10,7 @@ export default async function EmployeeEdit({ params }: { params: { id: string } 
       <Header />
       <div className="flex w-2/3 flex-col">
         <h1 className="py-4 text-2xl">Edit Employee</h1>
-        {session?.user.id ? <EditForm id={params.id} /> : null}
+        {session?.user.id ? <EditForm id={params.id} type={session.user.type} /> : null}
       </div>
     </div>
   );
