@@ -11,9 +11,9 @@ export default async function Home() {
     redirect("/auth/signin");
   }
 
-  if(session.user.type === "Admin" || session.user.type === "Manager") {
+  if(session.user.type === "admin" || session.user.type === "manager") {
     redirect("/employees")
-  } else if (session.user.type === "Employee") {
+  } else if (session.user.type === "employee") {
     redirect("/employee-edit")
   }
 

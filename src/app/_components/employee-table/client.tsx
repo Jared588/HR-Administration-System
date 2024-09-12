@@ -11,9 +11,10 @@ import { useRouter } from "next/navigation";
 
 interface ClientDataTableProps {
   data: Employee[];
+  userType: string;
 }
 
-export function ClientDataTable({ data }: ClientDataTableProps) {
+export function ClientDataTable({ data, userType }: ClientDataTableProps) {
   const [employees, setEmployees] = useState<Employee[]>(data);
   const utils = api.useUtils();
   const router = useRouter();
@@ -54,6 +55,7 @@ export function ClientDataTable({ data }: ClientDataTableProps) {
         data={employees}
         handleStatus={handleStatus}
         handleEdit={handleEdit}
+        userType={userType}
       />
     </div>
   );

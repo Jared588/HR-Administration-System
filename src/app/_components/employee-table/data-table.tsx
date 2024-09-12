@@ -28,6 +28,7 @@ import { type Employee } from "@prisma/client";
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  userType: string;
   handleStatus: (row: Employee) => void; // Add a new prop for editing a row
   handleEdit: (row: Employee) => void;
 }
@@ -35,6 +36,7 @@ interface DataTableProps<TData, TValue> {
 export function DataTable<TData, TValue>({
   columns,
   data,
+  userType,
   handleStatus,
   handleEdit,
 }: DataTableProps<TData, TValue>) {
@@ -66,11 +68,11 @@ export function DataTable<TData, TValue>({
         ),
       },
     ] as ColumnDef<TData, unknown>[];
-  }, [columns, handleStatus]);
+  }, [columns, handleEdit, handleStatus]);
 
   const table = useReactTable({
     data,
-    columns: columnsWithEditButton,
+    columns: userType === "admin" ? columnsWithEditButton : columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     onSortingChange: setSorting,
