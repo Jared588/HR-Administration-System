@@ -6,7 +6,7 @@ import {
 } from "next-auth";
 import { type Adapter } from "next-auth/adapters";
 import CredentialsProvider from "next-auth/providers/credentials";
-import bcrypt from "bcrypt"; 
+import bcrypt from "bcrypt";
 
 import { env } from "~/env";
 import { db } from "~/server/db";
@@ -82,16 +82,25 @@ export const authOptions: NextAuthOptions = {
 
         // Fetch user from your database
         const user = await db.user.findUnique({ where: { email: credentials.email } });
-        console.log(user)
 
-        if (user && credentials.password === user.password) {
+        // Check Password
+        if (!user?.password) {
+          console.log("User or Password is missing on database")
+          return
+        }
+        // Set Promise to Boolean
+        const isPasswordMatch = await bcrypt.compare(credentials.password, user.password);
+
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
+        if (user && isPasswordMatch) {
           // Return user object if credentials are valid
           console.log('passwords match!')
           return { id: user.id, name: user.name, email: user.email, type: user.type };
+        } else {
+          // Handle invalid credentials
+          console.log('passwords do not match or user not found.');
+          return null;
         }
-
-        // If authentication fails, return null
-        return null;
       },
     }),
   ],
