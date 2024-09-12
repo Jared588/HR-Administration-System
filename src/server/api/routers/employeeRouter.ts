@@ -85,5 +85,20 @@ export const employeeRouter = createTRPCRouter({
 
             return { success: true }
         }),
+
+    getManagers: publicProcedure.query(async ({ ctx }) => {
+        try {
+            const managers = await ctx.db.employee.findMany({
+            select: { manager: true },  // Ensure you're selecting the 'manager' field
+            distinct: ["manager"],      // Use distinct to fetch unique managers
+            orderBy: { manager: "asc" },
+            });
+
+            return managers;
+        } catch (error) {
+            console.error("Error fetching managers:", error);   // Error log
+            throw new Error("Failed to fetch managers");
+        }
+        }),
 });
 
