@@ -32,9 +32,10 @@ const FormSchema = z.object({
   status: z.enum(["Active", "Inactive"]),
 });
 
-export function EditForm({ id }: { id: string}) {
+export function EditForm({ id }: { id: string }) {
   const department = api.department.getDepartment.useQuery({ id }); // Define function
   const updateDepartment = api.department.updateDepartment.useMutation(); // Define function
+  const { data: managers } = api.employee.getManagers.useQuery();
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -81,7 +82,12 @@ export function EditForm({ id }: { id: string}) {
             <FormItem className="flex items-center justify-between">
               <FormLabel>Name</FormLabel>
               <FormControl>
-                <Input placeholder="name" {...field} className="w-2/3" required/>
+                <Input
+                  placeholder="name"
+                  {...field}
+                  className="w-2/3"
+                  required
+                />
               </FormControl>
             </FormItem>
           )}
@@ -92,16 +98,22 @@ export function EditForm({ id }: { id: string}) {
           render={({ field }) => (
             <FormItem className="flex items-center justify-between">
               <FormLabel>Manager</FormLabel>
-              <Select onValueChange={field.onChange} value={field.value} required>
+              <Select
+                onValueChange={field.onChange}
+                value={field.value}
+                required
+              >
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue placeholder="Select" />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  <SelectItem value="m@example.com">m@example.com</SelectItem>
-                  <SelectItem value="m@google.com">m@google.com</SelectItem>
-                  <SelectItem value="m@support.com">m@support.com</SelectItem>
+                  {managers?.map((manager) => (
+                    <SelectItem key={manager.manager} value={manager.manager}>
+                      {manager.manager}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </FormItem>
@@ -113,7 +125,11 @@ export function EditForm({ id }: { id: string}) {
           render={({ field }) => (
             <FormItem className="flex items-center justify-between">
               <FormLabel>Status</FormLabel>
-              <Select onValueChange={field.onChange} value={field.value} required>
+              <Select
+                onValueChange={field.onChange}
+                value={field.value}
+                required
+              >
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue placeholder="Select" />

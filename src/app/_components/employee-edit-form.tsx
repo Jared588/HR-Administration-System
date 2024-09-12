@@ -38,6 +38,7 @@ const FormSchema = z.object({
 export function EditForm({ id, type }: { id: string; type: string }) {
   const employee = api.employee.getEmployee.useQuery({ id }); // Define function
   const updateEmployee = api.employee.updateEmployee.useMutation(); // Define function
+  const { data: managers } = api.employee.getManagers.useQuery();
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -171,13 +172,14 @@ export function EditForm({ id, type }: { id: string; type: string }) {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="m@example.com">
-                        m@example.com
-                      </SelectItem>
-                      <SelectItem value="m@google.com">m@google.com</SelectItem>
-                      <SelectItem value="m@support.com">
-                        m@support.com
-                      </SelectItem>
+                      {managers?.map((manager) => (
+                        <SelectItem
+                          key={manager.manager}
+                          value={manager.manager}
+                        >
+                          {manager.manager}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                 </FormItem>
