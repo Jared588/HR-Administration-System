@@ -7,6 +7,7 @@ import { z } from "zod";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { api } from "~/trpc/react";
+import { useRouter } from "next/navigation";
 
 import {
   Select,
@@ -34,6 +35,9 @@ const FormSchema = z.object({
 });
 
 export function CreateForm() {
+  const router = useRouter();
+  const createEmployee = api.employee.createEmployee.useMutation(); // Define function
+
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -46,20 +50,10 @@ export function CreateForm() {
     },
   });
 
-  const createEmployee = api.employee.createEmployee.useMutation(); // Define function
-
   async function onSubmit(data: z.infer<typeof FormSchema>) {
     try {
-      await createEmployee.mutateAsync({ // Calls function
-        firstName: data.firstName,
-        lastName: data.lastName,
-        tel: data.tel,
-        email: data.email,
-        manager: data.manager,
-        status: data.status,
-      });
-
-      alert("Submitted!");
+      await createEmployee.mutateAsync(data);
+      router.push("/employees");
     } catch (error) {
       console.error("Failed to create employee:", error);
     }

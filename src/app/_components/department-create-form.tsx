@@ -7,6 +7,7 @@ import { z } from "zod";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { api } from "~/trpc/react";
+import { useRouter } from "next/navigation";
 
 import {
   Select,
@@ -31,6 +32,9 @@ const FormSchema = z.object({
 });
 
 export function CreateForm() {
+  const router = useRouter();
+  const createDepartment = api.department.createDepartment.useMutation(); // Define function
+
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -40,20 +44,12 @@ export function CreateForm() {
     },
   });
 
-  const createDepartment = api.department.createDepartment.useMutation(); // Define function
-
   async function onSubmit(data: z.infer<typeof FormSchema>) {
-    console.log("Submitted")
     try {
-      await createDepartment.mutateAsync({ // Calls function
-        name: data.name,
-        manager: data.manager,
-        status: data.status,
-      });
-
-      alert("Submitted!");
+      await createDepartment.mutateAsync(data);
+      router.push("/departments");
     } catch (error) {
-      console.error("Failed to create employee:", error);
+      console.error("Failed to create department:", error);
     }
   }
 
@@ -70,7 +66,12 @@ export function CreateForm() {
             <FormItem className="flex items-center justify-between">
               <FormLabel>Name</FormLabel>
               <FormControl>
-                <Input placeholder="name" {...field} className="w-1/2" required/>
+                <Input
+                  placeholder="name"
+                  {...field}
+                  className="w-1/2"
+                  required
+                />
               </FormControl>
             </FormItem>
           )}
@@ -81,7 +82,11 @@ export function CreateForm() {
           render={({ field }) => (
             <FormItem className="flex items-center justify-between">
               <FormLabel>Manager</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value} required>
+              <Select
+                onValueChange={field.onChange}
+                defaultValue={field.value}
+                required
+              >
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue placeholder="Select" />
@@ -102,7 +107,11 @@ export function CreateForm() {
           render={({ field }) => (
             <FormItem className="flex items-center justify-between">
               <FormLabel>Status</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value} required>
+              <Select
+                onValueChange={field.onChange}
+                defaultValue={field.value}
+                required
+              >
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue placeholder="Select" />
