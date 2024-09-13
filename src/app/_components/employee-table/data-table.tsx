@@ -47,7 +47,7 @@ interface DataTableProps<TData, TValue> {
 // Custom filter function for exact text match
 const exactTextFilter = (row, columnId, filterValue) => {
   const cellValue = row.getValue(columnId);
-  return cellValue === filterValue;
+  return cellValue === filterValue || filterValue === "All";
 };
 
 export function DataTable<TData, TValue>({
@@ -148,6 +148,7 @@ export function DataTable<TData, TValue>({
                 <SelectValue placeholder="Select" />
               </SelectTrigger>
               <SelectContent>
+                <SelectItem value="All">All</SelectItem>
                 <SelectItem value="Active">Active</SelectItem>
                 <SelectItem value="Inactive">Inactive</SelectItem>
               </SelectContent>
@@ -167,6 +168,7 @@ export function DataTable<TData, TValue>({
                 <SelectValue placeholder="Select" />
               </SelectTrigger>
               <SelectContent>
+              <SelectItem value="All">All</SelectItem>
                 {managers?.map((manager) => (
                   <SelectItem key={manager.manager} value={manager.manager}>
                     {manager.manager}
