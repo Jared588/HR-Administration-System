@@ -1,5 +1,6 @@
 import { PrismaClient, type Department } from "@prisma/client";
 import { ClientDataTable } from "./client";
+import { getServerAuthSession } from "~/server/auth";
 
 const prisma = new PrismaClient();
 
@@ -16,11 +17,13 @@ async function getData(): Promise<Department[]> {
 }
 
 export default async function DepartmentTable() {
+  const session = await getServerAuthSession();
   const data = await getData();
+  const userType = session?.user.type ?? "";
 
   return (
     <div className="container mx-auto">
-      <ClientDataTable data={data} />
+      <ClientDataTable data={data} userType={userType} />
     </div>
   );
 }

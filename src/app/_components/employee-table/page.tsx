@@ -33,8 +33,8 @@ async function getData(): Promise<Employee[]> {
 export default async function EmployeeTable() {
   const session = await getServerAuthSession();
   const data = await getData();
-  const userType = session?.user.type ?? ""; 
-  
+  const userType = session?.user.type ?? "";
+
   return (
     <div className="container mx-auto">
       <ClientDataTable data={data} userType={userType} />

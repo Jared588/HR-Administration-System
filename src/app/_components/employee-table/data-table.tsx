@@ -1,8 +1,11 @@
 "use client";
 
 import * as React from "react";
+import { api } from "~/trpc/react";
+
 import {
   type ColumnDef,
+  ColumnFiltersState,
   type SortingState,
   flexRender,
   getCoreRowModel,
@@ -20,6 +23,14 @@ import {
   TableHeader,
   TableRow,
 } from "~/components/ui/table";
+
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "~/components/ui/select";
 
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
@@ -42,6 +53,9 @@ export function DataTable<TData, TValue>({
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [globalFilter, setGlobalFilter] = React.useState<string>("");
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
+    [],
+  );
 
   // Append the edit button column definition to the columns
   const columnsWithEditButton = React.useMemo(() => {
@@ -77,10 +91,12 @@ export function DataTable<TData, TValue>({
     getPaginationRowModel: getPaginationRowModel(),
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
+    onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
     state: {
       sorting,
       globalFilter,
+      columnFilters,
     },
     onGlobalFilterChange: setGlobalFilter,
   });
@@ -89,8 +105,64 @@ export function DataTable<TData, TValue>({
     setGlobalFilter(event.target.value);
   };
 
+  const handleColumnFilterChange = (
+    value: string | undefined,
+    columnId: string,
+  ) => {
+    table.getColumn(columnId)?.setFilterValue(value);
+  };
+
+  // Get list of managers
+  const { data: managers } = api.employee.getManagers.useQuery();
+
   return (
     <div>
+      <div className="mb-10 flex flex-col items-center justify-between rounded-md border border-black">
+        <h1 className="self-start p-4">Filters</h1>
+        <div className="flex w-2/3 flex-col pb-10">
+          <div className="mb-4 flex items-center justify-between">
+            <h1>Status</h1>
+            <Select
+              onValueChange={(value) =>
+                handleColumnFilterChange(value, "status")
+              }
+              defaultValue={
+                (table.getColumn("status")?.getFilterValue() as string) ?? ""
+              }
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="Active">Active</SelectItem>
+                <SelectItem value="Inactive">Inactive</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="mb-4 flex items-center justify-between">
+            <h1>Manager</h1>
+            <Select
+              onValueChange={(value) =>
+                handleColumnFilterChange(value, "manager")
+              }
+              defaultValue={
+                (table.getColumn("manager")?.getFilterValue() as string) ?? ""
+              }
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select" />
+              </SelectTrigger>
+              <SelectContent>
+                {managers?.map((manager) => (
+                  <SelectItem key={manager.manager} value={manager.manager}>
+                    {manager.manager}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+      </div>
       <div className="flex justify-end py-4">
         <Input
           placeholder="Search..."
