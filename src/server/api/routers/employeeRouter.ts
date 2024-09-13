@@ -84,6 +84,10 @@ export const employeeRouter = createTRPCRouter({
                 where: { id },
                 data: { firstName, lastName, tel, email, manager, status },
             })
+            await ctx.db.user.update({
+                where: { id },
+                data: { name: `${firstName} ${lastName}`, email },
+            })
 
             return { success: true }
         }),

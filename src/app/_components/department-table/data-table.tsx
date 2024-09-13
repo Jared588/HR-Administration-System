@@ -1,6 +1,8 @@
 "use client";
 
 import * as React from "react";
+import { api } from "~/trpc/react";
+
 import {
   type ColumnDef,
   ColumnFiltersState,
@@ -109,6 +111,9 @@ export function DataTable<TData, TValue>({
   ) => {
     table.getColumn(columnId)?.setFilterValue(value);
   };
+
+  // Get list of managers
+  const { data: managers } = api.employee.getManagers.useQuery();
 
   return (
     <div>
