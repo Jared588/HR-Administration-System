@@ -40,9 +40,15 @@ interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   userType: string;
-  handleStatus: (row: Employee) => void; // Add a new prop for editing a row
+  handleStatus: (row: Employee) => void;
   handleEdit: (row: Employee) => void;
 }
+
+// Custom filter function for exact text match
+const exactTextFilter = (row, columnId, filterValue) => {
+  const cellValue = row.getValue(columnId);
+  return cellValue === filterValue;
+};
 
 export function DataTable<TData, TValue>({
   columns,
@@ -57,7 +63,6 @@ export function DataTable<TData, TValue>({
     [],
   );
 
-  // Append the edit button column definition to the columns
   const columnsWithEditButton = React.useMemo(() => {
     return [
       ...columns,
@@ -67,13 +72,17 @@ export function DataTable<TData, TValue>({
         cell: ({ row }: { row: { original: Employee } }) => (
           <div className="flex justify-between gap-6">
             <button
-              onClick={() => handleStatus(row.original)} // Call handleStatus with the original row data
-              className={`${row.original.status === "Active" ? "text-red-500 hover:text-red-600" : "text-green-500 hover:text-green-600"}`}
+              onClick={() => handleStatus(row.original)}
+              className={`${
+                row.original.status === "Active"
+                  ? "text-red-500 hover:text-red-600"
+                  : "text-green-500 hover:text-green-600"
+              }`}
             >
               {row.original.status === "Active" ? "Deactivate" : "Activate"}
             </button>
             <button
-              onClick={() => handleEdit(row.original)} // Call handleEdit with the original row data
+              onClick={() => handleEdit(row.original)}
               className="text-blue-500 hover:text-blue-600"
             >
               Edit
@@ -99,6 +108,12 @@ export function DataTable<TData, TValue>({
       columnFilters,
     },
     onGlobalFilterChange: setGlobalFilter,
+    filterFns: {
+      exactText: exactTextFilter,
+    },
+    defaultColumn: {
+      filterFn: "exactText",
+    },
   });
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -112,7 +127,6 @@ export function DataTable<TData, TValue>({
     table.getColumn(columnId)?.setFilterValue(value);
   };
 
-  // Get list of managers
   const { data: managers } = api.employee.getManagers.useQuery();
 
   return (

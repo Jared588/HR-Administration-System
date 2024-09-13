@@ -44,6 +44,12 @@ interface DataTableProps<TData, TValue> {
   handleEdit: (row: Department) => void;
 }
 
+// Custom filter function for exact text match
+const exactTextFilter = (row, columnId, filterValue) => {
+  const cellValue = row.getValue(columnId);
+  return cellValue === filterValue;
+};
+
 export function DataTable<TData, TValue>({
   columns,
   data,
@@ -99,6 +105,12 @@ export function DataTable<TData, TValue>({
       columnFilters,
     },
     onGlobalFilterChange: setGlobalFilter,
+    filterFns: {
+      exactText: exactTextFilter,
+    },
+    defaultColumn: {
+      filterFn: "exactText",
+    },
   });
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
