@@ -111,6 +111,11 @@ export function DataTable<TData, TValue>({
     defaultColumn: {
       filterFn: "exactText",
     },
+    initialState: {
+      pagination: {
+        pageSize: 10,
+      },
+    },
   });
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -154,7 +159,30 @@ export function DataTable<TData, TValue>({
           </div>
         </div>
       </div>
-      <div className="flex justify-end py-4">
+      <div className="flex justify-between py-4">
+        <div className="w-1/3">
+          <Select
+            onValueChange={(value) =>
+              table.setPageSize(
+                value === "All"
+                  ? table.getFilteredRowModel().rows.length
+                  : Number(value),
+              )
+            }
+            defaultValue="10"
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Show" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="10">10</SelectItem>
+              <SelectItem value="20">20</SelectItem>
+              <SelectItem value="50">50</SelectItem>
+              <SelectItem value="100">100</SelectItem>
+              <SelectItem value="All">All</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
         <Input
           placeholder="Search..."
           value={globalFilter}
