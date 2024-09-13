@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { v4 as uuidv4 } from 'uuid';
-import bcrypt from "bcrypt"; 
+import bcrypt from "bcrypt";
 
 import {
     createTRPCRouter,
@@ -80,13 +80,27 @@ export const employeeRouter = createTRPCRouter({
         }))
         .mutation(async ({ ctx, input }) => {
             const { id, firstName, lastName, tel, email, manager, status } = input;
+            // Get managers old name
+            const oldManager = await ctx.db.employee.findUnique({
+                where: { id },
+            });
+            const oldManagerName = oldManager?.firstName;
+
+            await ctx.db.employee.updateMany({
+                where: { manager: oldManagerName },
+                data: { manager: firstName }
+            })
             await ctx.db.employee.update({
                 where: { id },
-                data: { firstName, lastName, tel, email, manager, status },
+                data: { firstName, lastName, tel, email, manager: manager === oldManagerName ? firstName : manager, status },
             })
             await ctx.db.user.update({
                 where: { id },
                 data: { name: `${firstName} ${lastName}`, email },
+            })
+            await ctx.db.department.updateMany({
+                where: { manager: oldManagerName },
+                data: { manager: firstName }
             })
 
             return { success: true }
@@ -95,9 +109,9 @@ export const employeeRouter = createTRPCRouter({
     getManagers: publicProcedure.query(async ({ ctx }) => {
         try {
             const managers = await ctx.db.employee.findMany({
-            select: { manager: true },  // Ensure you're selecting the 'manager' field
-            distinct: ["manager"],      // Use distinct to fetch unique managers
-            orderBy: { manager: "asc" },
+                select: { manager: true },  // Ensure you're selecting the 'manager' field
+                distinct: ["manager"],      // Use distinct to fetch unique managers
+                orderBy: { manager: "asc" },
             });
 
             return managers;
@@ -105,6 +119,6 @@ export const employeeRouter = createTRPCRouter({
             console.error("Error fetching managers:", error);   // Error log
             throw new Error("Failed to fetch managers");
         }
-        }),
+    }),
 });
 
