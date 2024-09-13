@@ -185,7 +185,7 @@ export function DataTable<TData, TValue>({
         </div>
       </div>
       <div className="flex justify-between py-4">
-        <div className="w-1/3">
+        <div className="w-40">
           <Select
             onValueChange={(value) =>
               table.setPageSize(
