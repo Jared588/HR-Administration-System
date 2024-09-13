@@ -58,6 +58,7 @@ export default async function DropDownMenu() {
             <DropdownMenuItem>
               <Link href={"/employees"}>View Employees</Link>
             </DropdownMenuItem>
+            <DropdownMenuSeparator />
             <DropdownMenuItem>
               <Link href={"/api/auth/signout"}>Sign out</Link>
             </DropdownMenuItem>
@@ -70,6 +71,7 @@ export default async function DropDownMenu() {
                 Edit Profile
               </Link>
             </DropdownMenuItem>
+            <DropdownMenuSeparator />
             <DropdownMenuItem>
               <Link href={"/api/auth/signout"}>Sign out</Link>
             </DropdownMenuItem>
