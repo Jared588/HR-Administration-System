@@ -8,6 +8,7 @@ import { z, ZodString } from "zod";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { api } from "~/trpc/react";
+import { useRouter } from "next/navigation";
 
 import {
   Select,
@@ -36,6 +37,7 @@ export function EditForm({ id }: { id: string }) {
   const department = api.department.getDepartment.useQuery({ id }); // Define function
   const updateDepartment = api.department.updateDepartment.useMutation(); // Define function
   const { data: managers } = api.employee.getManagers.useQuery();
+  const router = useRouter();
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -63,7 +65,7 @@ export function EditForm({ id }: { id: string }) {
   async function onSubmit(data: z.infer<typeof FormSchema>) {
     try {
       await updateDepartment.mutateAsync(data);
-      alert("Submitted!");
+      router.push("/departments");
     } catch (error) {
       console.error("Failed to edit department:", error);
     }
