@@ -14,7 +14,7 @@ export default async function Home() {
   if(session.user.type === "admin" || session.user.type === "manager") {
     redirect("/employees")
   } else if (session.user.type === "employee") {
-    redirect("/employee-edit")
+    redirect(`/employee-edit/${session.user.id}`);
   }
 
   return (

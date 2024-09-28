@@ -51,8 +51,14 @@ export default async function DropDownMenu() {
         {session?.user.type === "manager" && (
           <>
             <DropdownMenuItem>
+              <Link href={`/employee-edit/${session.user.id}`}>
+                Edit Profile
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem>
               <Link href={"/employees"}>View Employees</Link>
             </DropdownMenuItem>
+            <DropdownMenuSeparator />
             <DropdownMenuItem>
               <Link href={"/api/auth/signout"}>Sign out</Link>
             </DropdownMenuItem>
@@ -61,8 +67,11 @@ export default async function DropDownMenu() {
         {session?.user.type === "employee" && (
           <>
             <DropdownMenuItem>
-              <Link href={`/employee-edit/${session.user.id}`}>Edit Profile</Link>
+              <Link href={`/employee-edit/${session.user.id}`}>
+                Edit Profile
+              </Link>
             </DropdownMenuItem>
+            <DropdownMenuSeparator />
             <DropdownMenuItem>
               <Link href={"/api/auth/signout"}>Sign out</Link>
             </DropdownMenuItem>
