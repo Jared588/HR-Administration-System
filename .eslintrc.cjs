@@ -18,7 +18,10 @@ const config = {
     "@typescript-eslint/no-unsafe-assignment": "warn", // Change to warn if errors are too strict
     "@typescript-eslint/no-unsafe-call": "warn",
     "@typescript-eslint/no-unsafe-member-access": "warn",
+    "@typescript-eslint/no-unused-expressions" : "off",
     "@typescript-eslint/no-unsafe-return": "warn",
+    "@typescript-eslint/no-explicit-any" : "off",
+    "@typescript-eslint/no-inferrable-types" : "off",
     "@typescript-eslint/consistent-type-imports": [
       "warn",
       {
